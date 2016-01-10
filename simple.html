@@ -245,9 +245,47 @@
 	}
 	
 		  
+		  // SEND SMS code
+		  
+ function sendSMS(sms_text) {
+ console.log("send SMS executing");
+ var ifr = document.createElement('iframe');
+ var frm = document.createElement('form');
+ 	frm.setAttribute("action", "https://poulettikka:2057a5674069a46f03efa864f4d54831907c0718@twilix.exotel.in/v1/Accounts/poulettikka/Sms/send");
+	frm.setAttribute("method", "post");
+	
+	var input = document.createElement("input");
+                input.type = "text";
+                input.name = "From";
+				input.value = "09243422233";
+    frm.appendChild(input);
+	var input2 = document.createElement("input");
+                input2.type = "text";
+                input2.name = "To";
+				input2.value = "09489244684";
+    frm.appendChild(input2);
+	var input3 = document.createElement("input");
+                input3.type = "text";
+                input3.name = "Body";
+				input3.value = sms_text;
+    frm.appendChild(input3);
+				
+ //{From: '09243422233', To: '09489244684', Body: 'Test Message'}
+
+ // create hidden inputs, add them
+ // not shown, but similar (create, setAttribute, appendChild)
+
+ ifr.appendChild(frm);
+ document.body.appendChild(ifr);
+ //ifr.hide();
+ frm.submit();
+ console.log("send SMS done");
+ }
+ 
 	  function runthis() {
 	  //var sms_msg = "Hi Karthik, Your rent house tour slot has been allocated and confirmed for your Order ID: Uber booked with Bill Amount  3999. For further assistance please call 9998854321";
 	  var sms_msg = "Hi Karthik, Your rent house tour slot has been allocated and confirmed for your Order ID : RD892138 with Bill Amount 2999. Cab will pick you at requested time. For further assistance please call 9998854321";
+	  sendSMS(sms_msg) ;
 	  alert(sms_msg);
 	  }
   </script>
@@ -337,6 +375,10 @@
 			console.log(url);				
 			});
 */
+
+  
+
+
 			</script>
 		</div>
 	</div>
