@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <!-- Bootstrap stuff -->
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+	<!-- Google Maps APIs -->
+    <script type="text/javascript" src='http://maps.google.com/maps/api/js?sensor=false&libraries=places'></script>
+    <script src="jquery-locationpicker-plugin/dist/locationpicker.jquery.min.js"></script>
+	<!-- Slider -->
+	<script src="js/bootstrap-slider.js"></script>
+	<link href="css/slider.css" rel="stylesheet">
+	
+	<!-- Date time picker -->
+  <script type="text/javascript" src="./bower_components/moment/min/moment.min.js"></script>
+  <script type="text/javascript" src="./bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+  <script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
+  <link rel="stylesheet" href="./bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+  
+    <title>Tour chooser page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-md-12">
+			<ul class="nav nav-tabs">
+				<li class="active">
+					<a href="index.html">Home</a>
+				</li>
+				<li>
+					<a href="#">Profile</a>
+				</li>
+				<li class="disabled">
+					<a href="#">Messages</a>
+				</li>
+				<li class="dropdown pull-right">
+					 <a href="#" data-toggle="dropdown" class="dropdown-toggle">Dropdown<strong class="caret"></strong></a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="#">Action</a>
+						</li>
+						<li>
+							<a href="#">Another action</a>
+						</li>
+						<li>
+							<a href="#">Something else here</a>
+						</li>
+						<li class="divider">
+						</li>
+						<li>
+							<a href="#">Separated link</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+			<div class="jumbotron">
+				<h2>
+					Rentr!
+				</h2>
+				<p>
+					Choose area, Tour, like a house? Move in.
+				</p>
+				<p>
+					<a class="btn btn-primary btn-large" href="#">Learn more</a>
+				</p>
+			</div>
+		</div>
+	</div>
+
+
+
+<!----------- MAIN CONTENT --->
+	<div class="row">
+		<div class="col-md-6">
+
+	
+<div class="form-horizontal" style="width: 550px">
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Location:</label>
+
+        <div class="col-sm-10"><input type="text" class="form-control" id="us3-address"/></div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Radius:</label>
+
+        <div class="col-sm-5"><input type="text" class="form-control" id="us3-radius"/></div>
+    </div>
+    <div id="us3" style="width: 550px; height: 400px;"></div>
+    <div class="clearfix">&nbsp;</div>
+    <div class="m-t-small">
+        <label class="p-r-small col-sm-1 control-label">Lat.:</label>
+
+        <div class="col-sm-3"><input type="text" class="form-control" style="width: 110px" id="us3-lat"/></div>
+        <label class="p-r-small col-sm-2 control-label">Long.:</label>
+
+        <div class="col-sm-3"><input type="text" class="form-control" style="width: 110px" id="us3-lon"/></div>
+    </div>
+    <div class="clearfix"></div>
+
+	
+  
+      <script>
+	  
+	  var location_data;
+	  var markersArray = [];
+	  
+	  $('#us3').locationpicker({
+        //location: {latitude: 46.15242437752303, longitude: 2.7470703125},
+		//location: {latitude: 51.4953274, longitude: -0.14587519999997767},
+		//location: {latitude: -33.890542,  longitude:  151.274856},
+		location: {latitude: 12.880542, longitude: 77.571786},
+        radius: 3000,
+		zoom: 12,
+		scrollwheel: true,
+        inputBinding: {
+            latitudeInput: $('#us3-lat'),
+            longitudeInput: $('#us3-lon'),
+            radiusInput: $('#us3-radius'),
+            locationNameInput: $('#us3-address')
+        },
+        enableAutocomplete: true,
+        onchanged: function (currentLocation, radius, isMarkerDropped) {
+            // Uncomment line below to show alert on each Location Changed event
+            //alert("Location changed. New location (" + currentLocation.latitude + ", " + currentLocation.longitude + ")");
+			if (isMarkerDropped)
+				mark_new_places(  currentLocation.latitude , currentLocation.longitude, parseFloat($("#us3-radius")[0].value) ) ;
+        },
+		oninitialized: function (component) {
+			mark_new_places( parseFloat($("#us3-lat").val()), parseFloat($("#us3-lon").val()), parseFloat($("#us3-radius").val()));
+		}
+    });
+	 $('#us3').locationpicker('autosize');
+	
+	</script>
+	
+	
+	<script type="text/javascript">
+		 
+
+   $.ajax({
+    dataType: "json",
+    url: "data/list_of_places.json",
+    mimeType: "application/json",
+    success: function load_places(data){
+		//console.log(data);
+		location_data= data;
+		//mark_new_places( parseFloat($("#us3-lat").val()), parseFloat($("#us3-lon").val()), parseFloat($("#us3-radius").val()));
+		}
+	  } );
+	  
+	 // Converts from degrees to radians.
+	Math.radians = function(degrees) {
+	  return degrees * Math.PI / 180;
+	};
+	 
+	// Converts from radians to degrees.
+	Math.degrees = function(radians) {
+	  return radians * 180 / Math.PI;
+	};
+	
+	function distance(lat1,lon1,lat2,lon2){
+		lat1 = Math.radians(lat1);
+		lon1 = Math.radians(lon1);
+		lat2 = Math.radians(lat2);
+		lon2 = Math.radians(lon2);
+		var R = 6371; // km
+		return Math.acos(Math.sin(lat1)*Math.sin(lat2) + 
+                  Math.cos(lat1)*Math.cos(lat2) *
+                  Math.cos(lon2-lon1)) * R;
+	}
+	
+	function clearOverlays() {
+	  for (var i = 0; i < markersArray.length; i++ ) {
+		markersArray[i].setMap(null);
+	  }
+	  markersArray.length = 0;
+	}
+
+	function mark_new_places(circleLat, circleLong, radius) { 
+
+	 var locations = [];
+	 var rooms = [];
+	 if ($('#1bhk').is(":checked")) { rooms.push(1);}
+	 if ($('#2bhk').is(":checked")) { rooms.push(2);}
+	 if ($('#3bhk').is(":checked")) { rooms.push(3);}
+	 console.log(rooms);
+	 var rentlimits = $("#ex2").val().split(","); //LL, UL
+	 $.each(location_data, function (index, value) {
+		//console.log(distance(circleLat, circleLong, value.lat, value.long) );
+
+		if ( distance(circleLat, circleLong, value.lat, value.long) <= radius/1000 && value.rent > rentlimits[0]  && value.rent < rentlimits[1]  && $.inArray(value.bhk, rooms)!=-1 ) {
+			var ar = [value.bhk + "bhk House<br>Rs." + value.rent, value.lat, value.long, value.bhk];
+			locations.push(ar);
+		}
+    });
+	 
+	 /*
+    var locations = [
+      ['Bondi Beach', -33.890542, 151.274856, 4],
+      ['Coogee Beach', -33.923036, 151.259052, 5],
+      ['Cronulla Beach', -34.028249, 151.157507, 3],
+      ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],
+      ['Maroubra Beach', -33.950198, 151.259302, 1]
+    ];
+	*/
+
+    /* 
+	//This is for new maps.
+	var map = new google.maps.Map(document.getElementById('us3'), {
+      zoom: 10,
+      center: new google.maps.LatLng(-33.92, 151.25),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    }); */
+	// This is to get existing maps from location picker.
+	var map = $(document.getElementById('us3')).data('locationpicker').map;
+
+	clearOverlays();
+    var infowindow = new google.maps.InfoWindow();
+
+    var marker, i;
+
+    for (i = 0; i < locations.length; i++) {  
+      marker = new google.maps.Marker({
+	    icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+        position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+        map: map
+      });
+	  markersArray.push(marker);
+
+      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        return function() {
+          infowindow.setContent(locations[i][0]);
+          infowindow.open(map, marker);
+        }
+      })(marker, i));
+    }
+	}
+	
+		  
+	  function runthis() {
+	  var sms_msg = "Hi Karthik, Your rent house tour slot has been allocated and confirmed for your Order ID: Uber booked with Bill Amount  3999. For further assistance please call 9998854321";
+	  alert(sms_msg);
+	  }
+  </script>
+  
+</div>
+		</div> 
+		<!-- COL8 END , COL 4 start-->
+		<div class="col-md-4">
+		<div class="well" >
+		
+		
+		<form role="form" id = "selectorForm">
+				<div class="form-group">
+				Filter by price interval: <b>€ 8000</b> <input id="ex2" type="text" class="span2" value="" data-slider-min="8000" data-slider-max="30000" data-slider-step="100" data-slider-value="[10000,20000]"/> <b>€ 30000</b>
+				</div>
+				<div class="form-group">
+					<label>
+						House  
+					</label>
+						<label class="checkbox-inline "><input id="1bhk" type="checkbox" value="" onclick='handleClick(this);' >1 BHK</label>
+						<label class="checkbox-inline "><input id="2bhk" type="checkbox" value="" onclick='handleClick(this);' >2 BHK</label>
+						<label class="checkbox-inline "><input id="3bhk" type="checkbox" value="" onclick='handleClick(this);' >3 BHK</label>
+				</div>
+				
+				<div class="form-group">
+                <div class='input-group date' id='datetimepicker1'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+			<script type="text/javascript">
+            $(function () {
+                $('#datetimepicker1').datetimepicker();
+            });
+        </script>
+		<input type="text" class="form-control bfh-phone" value="0 98765 43210" data-format="+1 (ddd) ddd-dddd">
+				<button type="submit" class="btn btn-default submitButton" onclick="runthis();">
+					Submit
+				</button>
+			</form>
+
+          </div>
+		  <script type="text/javascript">
+
+		  
+		  function appendPre(message) {
+        var pre = document.getElementById('output');
+        var textContent = document.createTextNode(message + '\n');
+        pre.appendChild(textContent);
+      }
+	  
+	  
+
+		  	$("#ex2").slider({})
+			.on('slide', function(slideEvent) {
+				mark_new_places( parseFloat($("#us3-lat").val()), parseFloat($("#us3-lon").val()), parseFloat($("#us3-radius").val()));
+			}
+			);
+			function handleClick(cb) {
+				console.log("Clicked, new value = " + cb.checked);
+				mark_new_places( parseFloat($("#us3-lat").val()), parseFloat($("#us3-lon").val()), parseFloat($("#us3-radius").val()));
+			}
+			/*$("#selectorForm")
+				.on('click', '.submitButton', function() {
+				var sms_msg = "Hi Karthik, Your rent house tour slot has been allocated and confirmed for your Order ID: Uber booked with Bill Amount  3999. For further assistance please call 9998854321";
+				var sms_data={
+            'From': '04430833772',
+            'To': '09489244684',
+            'Body': sms_msg
+        };
+		var sid = 'poulettikka';
+		var token = '2057a5674069a46f03efa864f4d54831907c0718';
+
+		var url = "https://" + sid +":" + token + "@twilix.exotel.in/v1/Accounts/" + sid + "/Sms/send";
+		appendPre("hrllo");
+		alert(sms_msg);
+		$("#pre_text").show();
+		#("#pre_text").text(sms_msg);
+				$.post( url, sms_data, function( data ) {
+  console.log( data.name ); // John
+  console.log( data.time ); // 2pm
+}, "json");
+			console.log(url);				
+			});
+*/
+			</script>
+		</div>
+	</div>
+
+</div>	
+</body>
+</html>
