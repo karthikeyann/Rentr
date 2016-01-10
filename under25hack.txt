@@ -1,0 +1,48 @@
+http://valonia.co.in/home
+http://hackathon.exotel.in
+http://devpost.com
+
+EXOTEL, JABONG, LOCUS, 
+exotel - IVRS, telephony, cloud
+kairos society - under 25 entreprenuers
+startup India, Standup India.
+
+EM3 Agri services.
+
+
+List of houses in each area. - location
+Uber API - link. (assume route is possible).
+3 or 4 houses per session.
+broker or assitant - fixed amount per day (3k or 1k).
+
+
+Backend:
+
+Location places - collect - FORMAT fix. - API
+{input place name} 
+{output List of house places, lat, long}
+
+
+Session time fixed 3 hours
+Uber API.
+{input list lat, log, time of first pickup}
+{TODO schedule ride}
+{output booking id, pass/fail}
+
+
+User side
+{input, location, rent UL, BHK, date, time}
+{Payment via PAYTM wallet, Share-sharecab}
+{Broker name, time of pickup, #no of houses shown, (optional approx ride route) }
+
+
+Broker side
+{ availability dates, time}
+{output, travel booking id, #no of pickup locations}
+{output house location, BHK, owner contact, rent, advance. (*terms fixed by gov.)}
+
+
+Bangalore boundaries.
+top-left 13.042092, 77.543132
+bottom-right 12.918146, 77.639606
+
